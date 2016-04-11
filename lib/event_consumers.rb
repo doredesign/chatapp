@@ -1,0 +1,2 @@
+module EventConsumers
+end

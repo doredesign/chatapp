@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe MessagesController, type: :controller do
+describe MessagesController, type: :controller do
   let(:user){ User.create(name: 'My User') }
 
   describe "GET #index" do
