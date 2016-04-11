@@ -1,0 +1,7 @@
+<h1>Welcome!</h1>
+
+<%= form_tag(session_path, method: "post") do %>
+  <%= label_tag(:name, "Name: ") %>
+  <%= text_field_tag(:name) %>
+  <%= submit_tag("Go") %>
+<% end %>
