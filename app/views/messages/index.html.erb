@@ -16,3 +16,7 @@ Welcome, <%= current_user.name %>! <%= link_to('Log out', 'session', method: :de
 <p>
   <button id="send">Send</button>
 </p>
+
+<% content_for :tail_javascript do %>
+  <%= javascript_include_tag 'messages' %>
+<% end %>
