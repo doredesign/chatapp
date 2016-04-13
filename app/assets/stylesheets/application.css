@@ -19,6 +19,12 @@
   border: 1px solid #ccc;
 }
 
+#typing {
+  color: gray;
+  font-style: italic;
+  height: 14px;
+}
+
 .public, .private, .login, .logout {
   border-bottom: 1px solid #CCCCCC;
   line-height: 1.2em;

@@ -12,5 +12,6 @@
 //
 //= require jquery
 //= require jquery_ujs
+//= require lodash.min.js
 //= require sockjs-0.3.4.min
 //= require vertxbus
