@@ -10,7 +10,6 @@ class SessionsController < ApplicationController
   end
 
   def destroy
-    # TODO: implement logout button
     session[:user_id] = nil
     redirect_to(root_path)
   end

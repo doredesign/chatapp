@@ -31,7 +31,7 @@
           typingUsersCount = typingUserNames.length;
       if (typingUsersCount > 1){
         $typingDiv.text('Multiple users are typing');
-      } else if (typingUsersCount == 1){
+      } else if (typingUsersCount === 1){
         $typingDiv.text(typingUserNames[0] + ' is typing');
       } else {
         $typingDiv.text('');
@@ -56,7 +56,7 @@
     eventBus.onopen = function() {
       eventBus.send("login", currentUser, function(data){
         for(var i = 0; i < data.users.length; i++) {
-          if (data.users[i] != currentUser) $("#receivers").append("<option>" + data.users[i] + "</option>");
+          if (data.users[i] !== currentUser) $("#receivers").append("<option>" + data.users[i] + "</option>");
         }
       });
 
@@ -70,7 +70,7 @@
       });
 
       eventBus.registerHandler("new_user", function(newUser) {
-        if (newUser != currentUser) {
+        if (newUser !== currentUser) {
           $("#receivers").append("<option>" + newUser + "</option");
           $updates.append("<div class='login'>" + newUser + " joined the room.</div>");
         }
