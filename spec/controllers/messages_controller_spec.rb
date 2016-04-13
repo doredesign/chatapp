@@ -5,7 +5,7 @@ describe MessagesController, type: :controller do
 
   describe "GET #index" do
     context "when user is logged in" do
-      before{ controller.stub(:current_user).and_return(user) }
+      before{ allow( controller ).to receive(:current_user).and_return(user) }
 
       it "returns http success" do
         get :index

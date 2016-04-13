@@ -1,11 +1,16 @@
 class EventConsumers::Logout < VertxConsumerBase
-  def self.register!
-    event_bus.consumer('logout') do |message|
-      chat_data = shared_data.get_local_map("chat")
-      users = to_a(chat_data.get("users"))
-      users.reject!{|u| u == message.body }
-      chat_data.put("users", users.join("\0"))
-    end
+
+  def process!
+    update_users!( users_without_logged_out_user )
+  end
+
+
+private
+
+  alias_method :logged_out_user, :message_body
+
+  def users_without_logged_out_user
+    fetch_users.reject{|u| u == logged_out_user }
   end
 end
 

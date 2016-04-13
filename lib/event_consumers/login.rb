@@ -1,13 +1,23 @@
 class EventConsumers::Login < VertxConsumerBase
-  def self.register!
-    event_bus.consumer('login') do |message|
-      user = message.body
-      chat_data = shared_data.get_local_map("chat")
-      users = chat_data.get("users") || ""
-      message.reply(users: to_a(users))
-      users = user + "\0" + users
-      chat_data.put("users", users)
-      event_bus.publish("new_user", user)
-    end
+
+  def process!
+    reply(users: original_users)
+    add_new_user!
+    publish_new_user(new_user)
+  end
+
+
+private
+
+  alias_method :new_user, :message_body
+
+# TODO: dedupe new_users
+  def add_new_user!
+    new_users = original_users + [new_user]
+    update_users!(new_users)
+  end
+
+  def original_users
+    @original_users ||= fetch_users || []
   end
 end

@@ -1,6 +1,6 @@
 Welcome, <%= current_user.name %>! <%= link_to('Log out', 'session', method: :delete) %>
 
-<div id="updates"></div>
+<div id="updates" data-current-user="<%= current_user.name %>"></div>
 
 <p>
   <label>receiver</label>
@@ -16,5 +16,3 @@ Welcome, <%= current_user.name %>! <%= link_to('Log out', 'session', method: :de
 <p>
   <button id="send">Send</button>
 </p>
-
-<div class="users-list"></div>
