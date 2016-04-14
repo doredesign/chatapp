@@ -11,7 +11,6 @@ private
 
   alias_method :new_user, :message_body
 
-# TODO: dedupe new_users
   def add_new_user!
     new_users = original_users + [new_user]
     update_users!(new_users)

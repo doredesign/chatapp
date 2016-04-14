@@ -70,10 +70,9 @@
       });
 
       eventBus.registerHandler("new_user", function(newUser) {
-        if (newUser !== currentUser) {
-          $("#receivers").append("<option>" + newUser + "</option");
-          $updates.append("<div class='login'>" + newUser + " joined the room.</div>");
-        }
+        if (newUser === currentUser) return;
+        $("#receivers").append("<option>" + newUser + "</option");
+        $updates.append("<div class='login'>" + newUser + " joined the room.</div>");
       });
 
       eventBus.registerHandler(currentUser, function(data) {
@@ -100,7 +99,7 @@
         eventBus.publish("chat", {sender: currentUser, message: msg});
       } else {
         $updates.append("<div class='public by_you'><span class='sender'>You said to " + receiver + ":</span>" + msg + "</div>");
-        eventBus.send(receiver, {sender: currentUser, message: msg});
+        eventBus.publish(receiver, {sender: currentUser, message: msg});
       }
       $content.val("");
     };
