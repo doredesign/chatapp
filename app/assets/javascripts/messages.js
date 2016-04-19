@@ -51,7 +51,8 @@
         $updates = $("#updates"),
         $content = $("#content"),
         currentUser = $updates.data('current-user'),
-        $typingDiv = $("#typing");
+        $typingDiv = $("#typing"),
+        userIsActive = true;
 
     eventBus.onopen = function() {
       eventBus.send("login", currentUser, function(data){
@@ -64,24 +65,25 @@
 
       eventBus.registerHandler("chat", function(data) {
         if (data.sender != currentUser)
-          $updates.append("<div class='public'><span class='sender'>" + data.sender + " said:</span>" + data.message + "</div>");
+          appendInChat("public", "<span class='sender'>" + data.sender + " said:</span>" + data.message);
         else
-          $updates.append("<div class='public by_you'><span class='sender'>You said:</span>" + data.message + "</div>");
+          appendInChat("public by_you", "<span class='sender'>You said:</span>" + data.message);
       });
 
       eventBus.registerHandler("new_user", function(newUser) {
         if (newUser === currentUser) return;
+
         $("#receivers").append("<option>" + newUser + "</option");
-        $updates.append("<div class='login'>" + newUser + " joined the room.</div>");
+        appendInChat("login", newUser + " joined the room.");
       });
 
       eventBus.registerHandler(currentUser, function(data) {
-        $updates.append("<div class='private'><span class='sender'>" + data.sender + " said to you:</span>" + data.message + "</div>");
+        appendInChat("private", "<span class='sender'>" + data.sender + " said to you:</span>" + data.message);
       });
 
       eventBus.registerHandler("logout", function(loggedOutUser) {
         $('#receivers option:contains("' + loggedOutUser + '")').remove();
-        $updates.append("<div class='logout'>" + loggedOutUser + " left the room.</div>");
+        appendInChat("logout", loggedOutUser + " left the room.");
       });
 
       eventBus.registerHandler("typing", function(currentlyTypingUser) {
@@ -98,14 +100,41 @@
       if ((receiver = $("#receivers").val()) === "all") {
         eventBus.publish("chat", {sender: currentUser, message: msg});
       } else {
-        $updates.append("<div class='public by_you'><span class='sender'>You said to " + receiver + ":</span>" + msg + "</div>");
+        appendInChat("public by_you", "<span class='sender'>You said to " + receiver + ":</span>");
         eventBus.publish(receiver, {sender: currentUser, message: msg});
       }
       $content.val("");
+      markAllAsRead();
+    };
+
+    var appendInChat = function(klass, html){
+      klass += userIsActive ? '' : ' unread';
+      $updates.append("<div class='" + klass + "'>" + html + "</div>");
     };
 
     var userTyped = function(event){
       eventBus.publish("typing", currentUser);
+    };
+
+    var userLeft = function(){
+      userIsActive = false;
+    };
+
+    var userReturned = function(){
+      userIsActive = true;
+      identifyUnreadMessages();
+    };
+
+    var identifyUnreadMessages = function(){
+      if ( $('.unread_notification').length > 0 ) return;
+
+      var $firstUnreadMessage = $updates.find('.unread').first();
+      $firstUnreadMessage.before("<div class='unread_notification'><h4>Unread messages</h4><a href='#' class='mark-as-read'>Mark as read</a></div>");
+    };
+
+    var markAllAsRead = function(){
+      $('.unread_notification').remove();
+      $updates.find('.unread').removeClass('unread');
     };
 
     $("#send").click(sendMessage);
@@ -119,5 +148,13 @@
       typingState.typingEventThrottle,
       { trailing: false }
     ));
+
+    $(window).on('blur', userLeft);
+    $(window).on('focus', userReturned);
+
+    $('#updates').on('click', '.mark-as-read', function(event){
+      event.preventDefault();
+      markAllAsRead();
+    });
   });
 })(jQuery, _);

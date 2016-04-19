@@ -49,3 +49,19 @@
   font-size: 0.8em;
   font-style: italic;
 }
+
+.unread_notification {
+  border-bottom: 1px dotted #f18c16;
+}
+  .unread_notification h4 {
+    color: #f18c16;
+    width: 80%;
+    text-align: center;
+    display: inline-block;
+    font-weight: normal;
+    margin: 10px 0 0;
+  }
+  .unread_notification a {
+    text-decoration: none;
+    font-size: 10px;
+  }
