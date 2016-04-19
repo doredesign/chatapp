@@ -22,6 +22,8 @@ development:
 test:
   <<: *default
   database: test
+  username: runner
+  password: semaphoredb
 
 production:
   <<: *default
