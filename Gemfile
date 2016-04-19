@@ -1,12 +1,11 @@
 source 'https://rubygems.org'
-ruby "2.2.3", :engine => "jruby", :engine_version => "9.0.5.0"
+ruby "2.2.2", :engine => "jruby", :engine_version => "9.0.0.0"
 
 gem 'jubilee', '3.0.0.beta2'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.2.6'
-# Use jdbcsqlite3 as the database for Active Record
-gem 'activerecord-jdbcsqlite3-adapter'
+gem 'pg', '0.17.1', :platform => :jruby, :git => 'git://github.com/headius/jruby-pg.git', :branch => :master
 # See https://github.com/rails/execjs#readme for more supported runtimes
 gem 'therubyrhino'
 # Use jquery as the JavaScript library
