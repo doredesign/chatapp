@@ -8,13 +8,7 @@
 </head>
 <body>
 
-<%= render "shared/header" %>
-
-<%= render "shared/left_menu" %>
-
-<div id="wrapper">
-  <%= yield %>
-</div>
+<%= yield %>
 
 <%= yield :tail_javascript %>
 </body>

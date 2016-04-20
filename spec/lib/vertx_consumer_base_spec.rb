@@ -5,7 +5,11 @@ describe VertxConsumerBase do
     def process!; end
   end
 
-  let(:fake_message){ double('message', body: '') }
+  subject{ EventConsumers::TestSubClass.new(fake_message) }
+  let(:user){ User.create(name: 'John') }
+  let(:room){ Room.create(name: 'my room') }
+  let(:fake_message){ double('fake message', body: fake_body) }
+  let(:fake_body){ double('fake body', sender: user.name, room: room.name) }
 
   describe ".register!" do
     let(:fake_event_bus){ double('event bus') }
@@ -43,6 +47,18 @@ describe VertxConsumerBase do
   describe ".demodulized_class_name" do
     it "returns the name of the class" do
       expect( EventConsumers::TestSubClass.demodulized_class_name ).to eq "TestSubClass"
+    end
+  end
+
+  describe "#user" do
+    it "returns user by the name of the message sender" do
+      expect( subject.user ).to eq user
+    end
+  end
+
+  describe "#room" do
+    it "returns room by the name of the message room" do
+      expect( subject.room ).to eq room
     end
   end
 end

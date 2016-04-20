@@ -3,19 +3,21 @@ require 'rails_helper'
 describe EventConsumers::Logout do
   describe "#process!" do
     subject{ EventConsumers::Logout.new(fake_message) }
-    let(:original_users){ %w[Jane John Rumpelstiltskin] }
-    let(:logged_out_user){ 'John' }
-    let(:logged_out_users){ original_users - [logged_out_user] }
-    let(:fake_message){ double('fake message', body: logged_out_user) }
+    let(:user){ User.create(name: 'John') }
+    let(:room){ Room.create(name: 'my room') }
+    let(:fake_message){ double('fake message', body: fake_body) }
+    let(:fake_body){ double('fake body', sender: user.name, room: room.name) }
 
     before do
-      allow( subject ).to receive(:fetch_users).and_return( original_users )
-      allow( subject ).to receive(:update_users!)
+      user.rooms = [room]
     end
 
-    it "updates users to exlude new one" do
-      expect( subject ).to receive(:update_users!).with( logged_out_users )
-      subject.process!
+    it "removes user from all rooms" do
+      expect{
+        subject.process!
+      }.to change{
+        user.reload.rooms.include?(room)
+      }.from( true ).to( false )
     end
   end
 end

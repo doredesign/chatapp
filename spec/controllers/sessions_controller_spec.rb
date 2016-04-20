@@ -6,7 +6,12 @@ RSpec.describe SessionsController, type: :controller do
   describe "GET #new" do
     it "returns http success" do
       get :new
-      expect(response).to have_http_status(:success)
+      expect( response ).to have_http_status(:success)
+    end
+
+    it "uses no_menu layout" do
+      get :new
+      expect( response ).to render_template 'layouts/no_menu'
     end
   end
 
@@ -22,7 +27,7 @@ RSpec.describe SessionsController, type: :controller do
 
       it "redirects to the specifid URL" do
         post :create, name: user.name, return_to: return_to
-        expect(response).to redirect_to(return_to)
+        expect( response ).to redirect_to(return_to)
       end
     end
 
@@ -35,7 +40,7 @@ RSpec.describe SessionsController, type: :controller do
 
       it "redirects to the root path" do
         post :create, name: user.name
-        expect(response).to redirect_to(root_path)
+        expect( response ).to redirect_to(root_path)
       end
     end
 
@@ -53,6 +58,11 @@ RSpec.describe SessionsController, type: :controller do
         post :create, name: new_user_name
         expect( controller.current_user.name ).to eq(new_user_name)
       end
+
+      it "redirects to the root path" do
+        post :create, name: user.name
+        expect( response ).to redirect_to(root_path)
+      end
     end
   end
 
@@ -65,7 +75,7 @@ RSpec.describe SessionsController, type: :controller do
 
     it "redirects to the root path" do
       delete :destroy
-      expect(response).to redirect_to(root_path)
+      expect( response ).to redirect_to(root_path)
     end
   end
 end

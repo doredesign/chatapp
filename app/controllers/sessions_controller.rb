@@ -1,6 +1,8 @@
 class SessionsController < ApplicationController
   before_action :find_or_create_user, only: :create
 
+  layout "no_menu"
+
   def new
   end
 

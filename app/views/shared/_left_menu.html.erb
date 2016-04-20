@@ -1,0 +1,13 @@
+<div id="left-menu">
+  <h5>Rooms:</h5>
+  <ul>
+    <% all_rooms.each do |room| %>
+      <% if current_room == room %>
+        <li id='current-room'><%= room.name %></li>
+      <% else %>
+        <li><%= link_to(room.name, room_path(room.name)) %></li>
+      <% end %>
+    <% end %>
+  </ul>
+  <%= link_to("Add room", new_room_path, class: 'new-room') %>
+</div>

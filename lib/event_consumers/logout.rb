@@ -1,16 +1,13 @@
 class EventConsumers::Logout < VertxConsumerBase
-
   def process!
-    update_users!( users_without_logged_out_user )
+    remove_user_from_rooms!
   end
 
 
 private
 
-  alias_method :logged_out_user, :message_body
-
-  def users_without_logged_out_user
-    fetch_users.reject{|u| u == logged_out_user }
+  def remove_user_from_rooms!
+    user.rooms = []
   end
 end
 

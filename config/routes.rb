@@ -1,7 +1,13 @@
 Rails.application.routes.draw do
-  root 'messages#index'
+  root 'rooms#default'
 
   resource :session, only: [:new, :create, :destroy]
+
+  resources :rooms, param: :name, only: [:show, :new, :create] do
+    collection do
+      get 'default'
+    end
+  end
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

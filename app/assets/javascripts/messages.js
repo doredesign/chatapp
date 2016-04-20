@@ -47,61 +47,60 @@
 
 
   $(function() {
-    var eventBus = new vertx.EventBus("/eventbus"),
-        $updates = $("#updates"),
-        $content = $("#content"),
-        currentUser = $updates.data('current-user'),
-        $typingDiv = $("#typing"),
+    var eventBus     = new vertx.EventBus("/eventbus"),
+        $updates     = $("#updates"),
+        $content     = $("#content"),
+        currentUser  = $updates.data('current-user'),
+        $typingDiv   = $("#typing"),
+        currentRoom  = $('#current-room').text(),
         userIsActive = true;
 
     eventBus.onopen = function() {
-      eventBus.send("login", currentUser, function(data){
-        for(var i = 0; i < data.users.length; i++) {
-          if (data.users[i] !== currentUser) $("#receivers").append("<option>" + data.users[i] + "</option>");
-        }
-      });
+      $updates.html("<h5>Howdy! You're in the " + currentRoom + " room.</h5>");
 
-      $updates.html("<h5>Welcome to the Jubilee chat room!</h5>");
-
-      eventBus.registerHandler("chat", function(data) {
+      eventBus.registerHandler(currentRoom + "-chat", function(data) {
         if (data.sender != currentUser)
           appendInChat("public", "<span class='sender'>" + data.sender + " said:</span>" + data.message);
         else
           appendInChat("public by_you", "<span class='sender'>You said:</span>" + data.message);
       });
 
-      eventBus.registerHandler("new_user", function(newUser) {
-        if (newUser === currentUser) return;
+      eventBus.registerHandler("login", function(data) {
+        if (data.room !== currentRoom || data.sender === currentUser) return;
 
-        $("#receivers").append("<option>" + newUser + "</option");
-        appendInChat("login", newUser + " joined the room.");
+        $("#receivers").append("<option>" + data.sender + "</option");
+        appendInChat("login", data.sender + " joined the room.");
       });
 
-      eventBus.registerHandler(currentUser, function(data) {
+      eventBus.registerHandler(currentRoom + "-" + currentUser, function(data) {
         appendInChat("private", "<span class='sender'>" + data.sender + " said to you:</span>" + data.message);
       });
 
-      eventBus.registerHandler("logout", function(loggedOutUser) {
-        $('#receivers option:contains("' + loggedOutUser + '")').remove();
-        appendInChat("logout", loggedOutUser + " left the room.");
+      eventBus.registerHandler("logout", function(data) {
+        if (data.room !== currentRoom) return;
+
+        $('#receivers option:contains("' + data.sender + '")').remove();
+        appendInChat("logout", data.sender + " left the room.");
       });
 
-      eventBus.registerHandler("typing", function(currentlyTypingUser) {
+      eventBus.registerHandler(currentRoom + "-typing", function(currentlyTypingUser) {
         if (currentlyTypingUser !== currentUser) typingState.userTyping(currentlyTypingUser);
       });
 
       window.onbeforeunload = function() {
-        eventBus.publish("logout", currentUser);
+        eventBus.publish("logout", {sender: currentUser, room: currentRoom});
       };
+
+      eventBus.publish("login", {sender: currentUser, room: currentRoom});
     };
 
     var sendMessage = function() {
       var msg = $content.val();
       if ((receiver = $("#receivers").val()) === "all") {
-        eventBus.publish("chat", {sender: currentUser, message: msg});
+        eventBus.publish(currentRoom + "-chat", {sender: currentUser, message: msg});
       } else {
-        appendInChat("public by_you", "<span class='sender'>You said to " + receiver + ":</span>");
-        eventBus.publish(receiver, {sender: currentUser, message: msg});
+        appendInChat("public by_you", "<span class='sender'>You said to " + receiver + ":</span>" + msg);
+        eventBus.publish(currentRoom + "-" + receiver, {sender: currentUser, message: msg});
       }
       $content.val("");
       markAllAsRead();
@@ -113,7 +112,7 @@
     };
 
     var userTyped = function(event){
-      eventBus.publish("typing", currentUser);
+      eventBus.publish(currentRoom + "-typing", currentUser);
     };
 
     var userLeft = function(){

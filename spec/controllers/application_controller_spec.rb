@@ -19,10 +19,21 @@ describe ApplicationController, type: :controller do
     end
 
     context "when user is not logged in" do
-      it "returns current user" do
+      it "returns nil" do
         get :index
         expect( controller.current_user ).to be_nil
       end
+    end
+  end
+
+  describe "#all_rooms" do
+    it "returns all rooms" do
+      rooms = [
+        Room.create(name: 'first'),
+        Room.create(name: 'second')
+      ]
+
+      expect( controller.all_rooms ).to eq rooms
     end
   end
 end
