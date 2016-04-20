@@ -9,7 +9,7 @@ describe VertxConsumerBase do
   let(:user){ User.create(name: 'John') }
   let(:room){ Room.create(name: 'my room') }
   let(:fake_message){ double('fake message', body: fake_body) }
-  let(:fake_body){ double('fake body', sender: user.name, room: room.name) }
+  let(:fake_body){ {sender: user.name, room: room.name} }
 
   describe ".register!" do
     let(:fake_event_bus){ double('event bus') }

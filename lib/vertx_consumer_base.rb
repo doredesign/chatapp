@@ -1,3 +1,5 @@
+require 'ostruct'
+
 class VertxConsumerBase
   IncompleteSubclass = Class.new( StandardError )
 
@@ -20,7 +22,7 @@ class VertxConsumerBase
   attr_reader :message_body
 
   def initialize(message)
-    @message_body = message.body
+    @message_body = OpenStruct.new(message.body)
   end
 
   def process!
