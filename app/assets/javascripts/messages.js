@@ -1,4 +1,4 @@
-(function($, _){
+(function(vertx, $, _){
   var typingState = (function(){
     var typingUsers = {},
         typingEventWait = 2000,
@@ -156,4 +156,4 @@
       markAllAsRead();
     });
   });
-})(jQuery, _);
+})(vertx, jQuery, _);
