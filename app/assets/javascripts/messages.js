@@ -83,8 +83,14 @@
         appendInChat("logout", data.sender + " left the room.");
       });
 
-      eventBus.registerHandler(currentRoom + "-typing", function(currentlyTypingUser) {
+      // Typing to all
+      eventBus.registerHandler(currentRoom + "-all-typing", function(currentlyTypingUser) {
         if (currentlyTypingUser !== currentUser) typingState.userTyping(currentlyTypingUser);
+      });
+
+      // Typing to me
+      eventBus.registerHandler(currentRoom + "-" + currentUser + "-typing", function(currentlyTypingUser){
+        typingState.userTyping(currentlyTypingUser);
       });
 
       window.onbeforeunload = function() {
@@ -112,7 +118,8 @@
     };
 
     var userTyped = function(event){
-      eventBus.publish(currentRoom + "-typing", currentUser);
+      var recipient = $("#receivers").val();
+      eventBus.publish(currentRoom + "-" + recipient + "-typing", currentUser);
     };
 
     var userLeft = function(){
